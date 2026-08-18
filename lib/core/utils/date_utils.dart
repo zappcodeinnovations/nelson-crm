@@ -1,0 +1,69 @@
+import 'package:intl/intl.dart';
+
+/// Date and time formatting utilities.
+class AppDateUtils {
+  AppDateUtils._();
+
+  static String formatDate(DateTime date) {
+    return DateFormat('dd MMM yyyy').format(date);
+  }
+
+  static String formatTime(DateTime date) {
+    return DateFormat('hh:mm a').format(date);
+  }
+
+  static String formatDateTime(DateTime date) {
+    return DateFormat('dd MMM yyyy, hh:mm a').format(date);
+  }
+
+  static String formatDateShort(DateTime date) {
+    return DateFormat('dd MMM').format(date);
+  }
+
+  static String formatApiDate(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
+
+  static String timeAgo(DateTime date) {
+    final now = DateTime.now();
+    final diff = now.difference(date);
+
+    if (diff.inSeconds < 60) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    if (diff.inDays < 30) return '${(diff.inDays / 7).floor()}w ago';
+    return formatDate(date);
+  }
+
+  static String greeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  }
+
+  static bool isToday(DateTime date) {
+    final now = DateTime.now();
+    return date.year == now.year && date.month == now.month && date.day == now.day;
+  }
+
+  static bool isTomorrow(DateTime date) {
+    final tomorrow = DateTime.now().add(const Duration(days: 1));
+    return date.year == tomorrow.year && date.month == tomorrow.month && date.day == tomorrow.day;
+  }
+
+  static bool isOverdue(DateTime date) {
+    return date.isBefore(DateTime.now());
+  }
+
+  static String relativeDay(DateTime date) {
+    if (isToday(date)) return 'Today';
+    if (isTomorrow(date)) return 'Tomorrow';
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    if (date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day) {
+      return 'Yesterday';
+    }
+    return formatDate(date);
+  }
+}
